@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebGL Cube Lighting</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="uiContainer">
+    <div id="ui">
+      <div id="Cube-Rotation"></div>
+      <div id="Light-X-Rotation"></div>
+      <div id="Light-Y-Rotation"></div>
+      <div id="Limit"></div>
+    </div>
+  </div>
+
+  <!-- Vertex Shader -->
+  <script id="vertex-shader-3d" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    attribute vec3 a_normal;
+
+    uniform vec3 u_lightWorldPosition;
+    uniform vec3 u_viewWorldPosition;
+
+    uniform mat4 u_world;
+    uniform mat4 u_worldViewProjection;
+    uniform mat4 u_worldInverseTranspose;
+
+    varying vec3 v_normal;
+    varying vec3 v_surfaceToLight;
+    varying vec3 v_surfaceToView;
+
+    void main() {
+      gl_Position = u_worldViewProjection * a_position;
+      v_normal = mat3(u_worldInverseTranspose) * a_normal;
+      vec3 surfaceWorldPosition = (u_world * a_position).xyz;
+      v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
+      v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition;
+    }
+  </script>
+
+  <!-- Fragment Shader -->
+  <script id="fragment-shader-3d" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec3 v_normal;
+    varying vec3 v_surfaceToLight;
+    varying vec3 v_surfaceToView;
+
+    uniform vec4 u_colorFront;
+    uniform vec4 u_colorBack;
+    uniform vec4 u_colorTop;
+    uniform vec4 u_colorBottom;
+    uniform vec4 u_colorLeft;
+    uniform vec4 u_colorRight;
+    uniform float u_shininess;
+    uniform vec3 u_lightDirection;
+    uniform float u_limit;
+
+    void main() {
+      vec3 normal = normalize(v_normal);
+      vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
+      vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+      vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
+
+      float dotFromDirection = dot(surfaceToLightDirection, -u_lightDirection);
+      float inLight = step(u_limit, dotFromDirection);
+      float light = inLight * dot(normal, surfaceToLightDirection);
+      float specular = inLight * pow(dot(normal, halfVector), u_shininess);
+
+      vec4 color;
+      if (abs(normal.z) > 0.9) {
+        color = normal.z > 0.0 ? u_colorFront : u_colorBack;
+      } else if (abs(normal.y) > 0.9) {
+        color = normal.y > 0.0 ? u_colorTop : u_colorBottom;
+      } else if (abs(normal.x) > 0.9) {
+        color = normal.x > 0.0 ? u_colorRight : u_colorLeft;
+      }
+
+      gl_FragColor = color;
+      gl_FragColor.rgb *= light;
+      gl_FragColor.rgb += specular;
+    }
+  </script>
+
+  <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+  <script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+  <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background : #f0ccfd;
+}
+#uiContainer {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+#ui > div {
+  margin: 5px 0;
+  font-family : "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}

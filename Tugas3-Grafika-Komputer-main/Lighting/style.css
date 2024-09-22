@@ -1,0 +1,23 @@
+@import url("https://webglfundamentals.org/webgl/resources/webgl-tutorials.css");
+body {
+  margin: 0;
+}
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background-color : lightyellow;
+}
+
+
+#Limit, #Light-X-Rotation, #Light-Y-Rotation, #Cube-Rotation {
+  font-family: "Papyrus", fantasy;
+  font-size: 20px; 
+ 
+}
+
+
+input[type="range"] {
+  font-family: "Papyrus", fantasy;
+  font-size: 14px; 
+}

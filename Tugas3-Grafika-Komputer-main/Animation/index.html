@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Cube</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="uiContainer">
+        <div id="ui">
+            <div id="Translation-X"></div>
+            <div id="Translation-Y"></div>
+            <div id="Translation-Z"></div>
+            <div id="Rotation-X"></div>
+            <div id="Rotation-Y"></div>
+            <div id="Rotation-Z"></div>
+            <div id="Scalling-X"></div>
+            <div id="Scalling-Y"></div>
+            <div id="Scalling-Z"></div>
+        </div>
+    </div>
+
+    <!-- vertex shader -->
+    <script id="vertex-shader-3d" type="x-shader/x-vertex">
+        attribute vec4 a_position;
+        attribute vec4 a_color;
+        uniform mat4 u_matrix;
+        varying vec4 v_color;
+        void main() {
+            gl_Position = u_matrix * a_position;
+            v_color = a_color;
+        }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="fragment-shader-3d" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 v_color;
+        void main() {
+            gl_FragColor = v_color;
+        }
+    </script>
+
+    <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+    <script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-ui.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
